@@ -1,0 +1,19 @@
+{
+  "name": "backendserver",
+  "version": "1.0.0",
+  "description": "Servidor Backend del curso Angular Avanzado",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jetzemani Sanchez",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.4",
+    "method-override": "^3.0.0",
+    "mongoose": "^5.3.2",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0"
+  }
+}
