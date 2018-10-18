@@ -6,9 +6,9 @@ var hospitalSchema = new moongoose.Schema({
         type : moongoose.Schema.Types.ObjectId,
         default : ObjectID
     },
-    name : {
+    Name : {
         type : String,
-        required : true
+        required : [true, "El name es necesario"]
     },
     Image : {
         type : String,
@@ -22,11 +22,10 @@ var hospitalSchema = new moongoose.Schema({
         type: Boolean,
         default: true
     },
-    Usuarios : [{
-        required : true,
+    Usuario : {
         type : moongoose.Schema.Types.ObjectId,
         ref : 'Usuario'
-    }],
-});
+    },
+}, {collection : "hospitales"});
 
 module.exports = moongoose.model("Hospital", hospitalSchema);

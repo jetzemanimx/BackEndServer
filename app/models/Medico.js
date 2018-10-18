@@ -7,13 +7,13 @@ var medicoSchema = new moongoose.Schema({
         default : ObjectID
     },
     personalData : {
-        name : {
+        Name : {
             type : String,
-            required : true
+            required : [true, "El Name es necesario"]
         },
         lastName: {
             type: String,
-            required: true
+            required : [true, "El lastName es necesario"]
         },
         Image : {
             type : String,
@@ -28,16 +28,16 @@ var medicoSchema = new moongoose.Schema({
         type: Boolean,
         default: true
     },
-    Usuarios : [{
-        required : true,
+    Usuario : {
+        required : [true, "El ID Usuario es necesario"],
         type : moongoose.Schema.Types.ObjectId,
         ref : 'Usuario'
-    }],
-    Hospitales : [{
-        required : true,
+    },
+    Hospital : {
+        required : [true, "El Id Hospital es necesario"],
         type : moongoose.Schema.Types.ObjectId,
         ref : 'Hospital'
-    }]
+    }
 });
 
 module.exports = moongoose.model("Medico", medicoSchema);

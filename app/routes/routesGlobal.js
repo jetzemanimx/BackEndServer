@@ -1,6 +1,3 @@
-var jwt = require('jsonwebtoken');
-var SEED = require('../../config/config').SEED;
-
 module.exports = function(app) {
 	//Ruta Inicial
 	app.route('/')

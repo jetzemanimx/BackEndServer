@@ -1,4 +1,4 @@
-const Usuario = require('../models/Usuario');
+var Usuario = require('../models/Usuario');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var SEED = require('../../config/config').SEED;
@@ -8,29 +8,48 @@ module.exports = function(app) {
 	//==============================================================
 	//						Show all Users
 	//==============================================================
+	//#region
 	app.route('/Api/Users/All')
-		.get(mdAuth.verifyToken ,function(req, res) {
+		.get(function(req, res) {
+			var Offset = req.query.Offset || 0;
+			Offset = Number(Offset);
 			Usuario.find(
 				{},
-				'personalData.Name personalData.lastName personalData.Image Role personalData.Email Google',
-				function(error, data, callback) {
+				'personalData.Name personalData.lastName personalData.Image Role personalData.Email Google'
+			)
+				.skip(Offset)
+				.limit(5)
+				.exec(function(error, data, callback) {
 					if (error) {
 						res.status(500).json(error);
 					} else {
-						res.status(201).json({
-							data : data,
-							userToken : req.UserToken
+						if (!data) {
+							return res.status(204).json({
+								Message: 'No existen datos',
+								Data: data,
+							});
+						}
+
+						Usuario.countDocuments({}, function(error, counter) {
+							if (error) {
+								res.status(500).json(error);
+							} else {
+								res.status(200).json({
+									data: data,
+									total: counter,
+								});
+							}
 						});
 					}
-				}
-			);
+				});
 		})
 		.post(function(req, res) {});
+	//#endregion
 
 	//==============================================================
 	//                          Login User
 	//==============================================================
-
+	//#region
 	app.route('/Api/Login').post(function(req, res) {
 		Usuario.findOne({ 'personalData.Email': req.body.Email }, function(error, data) {
 			if (error) {
@@ -52,17 +71,19 @@ module.exports = function(app) {
 				//                          Creamos Token
 				//==============================================================
 				data.personalData.Password = ':)';
-				var Token = jwt.sign({ Usuario: data.personalData }, SEED, { expiresIn: 14400 });
+				var Token = jwt.sign({ Usuario: data }, SEED, { expiresIn: 14400 });
 				data.JWT = Token;
 				res.status(200).json(data);
 			}
 		});
 	});
+	//#endregion
 
 	//==============================================================
 	//						Create User
 	//==============================================================
-	app.route('/Api/Users/Insert').post( mdAuth.verifyToken ,function(req, res) {
+	//#region
+	app.route('/Api/Users/Insert').post(mdAuth.verifyToken, function(req, res) {
 		var user = new Usuario();
 		user.personalData.Name = req.body.Name;
 		user.personalData.lastName = req.body.lastName;
@@ -76,16 +97,18 @@ module.exports = function(app) {
 				res.status(400).json(error);
 			} else {
 				res.status(201).json({
-					data : data,
-					userToken : req.UserToken
+					data: data,
+					userToken: req.UserToken,
 				});
 			}
 		});
 	});
+	//#endregion
 
 	//==============================================================
 	//						Update User
 	//==============================================================
+	//#region
 	app.route('/Api/Users/Update/:id').patch(mdAuth.verifyToken, function(req, res) {
 		Usuario.findByIdAndUpdate(
 			req.params.id,
@@ -112,18 +135,20 @@ module.exports = function(app) {
 					} else {
 						data.personalData.Password = ':)';
 						res.status(200).json({
-							data : data,
-							userToken : req.UserToken
+							data: data,
+							userToken: req.UserToken,
 						});
 					}
 				}
 			}
 		);
 	});
+	//#endregion
 
 	//==============================================================
 	//                          Delete User
 	//==============================================================
+	//#region
 	app.route('/Api/Users/Delete/:id').delete(mdAuth.verifyToken, function(req, res) {
 		Usuario.findByIdAndRemove(req.params.id, function(error, data) {
 			if (error) {
@@ -136,10 +161,11 @@ module.exports = function(app) {
 					});
 				}
 				res.status(200).json({
-					data : data,
-					userToken : req.UserToken
+					data: data,
+					userToken: req.UserToken,
 				});
 			}
 		});
 	});
+	//#endregion
 };

@@ -15,7 +15,7 @@ var SEED = require('../../config/config').SEED;
 					Error: error,
 				});
             }
-            //console.log('Decoded-> ' , decoded);
+            //console.log('Decoded-> ' , decoded.Usuario._id);
             req.UserToken = decoded.Usuario;
 			next();
 		});
