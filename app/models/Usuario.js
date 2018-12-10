@@ -40,7 +40,7 @@ var usuarioSchema = new moongoose.Schema({
     },
     Role :  {
         type : String,
-        required : [true, "El nombre es necesario"],
+        required : [true, "El Role es necesario"],
         default : "USER_ROLE",
         enum : roleValidate
     },
